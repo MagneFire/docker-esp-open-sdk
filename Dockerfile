@@ -11,7 +11,7 @@ RUN echo 'deb http://httpredir.debian.org/debian jessie-updates non-free' >> /et
 RUN echo 'deb http://security.debian.org/ jessie/updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
 
 RUN apt-get update
-RUN apt-get install -y make unrar autoconf automake libtool gcc g++ gperf flex bison \ 
+RUN apt-get install -y make autoconf automake libtool gcc g++ gperf flex bison \ 
 		       texinfo gawk ncurses-dev libexpat-dev python python-serial sed \ 
 		       git unzip bash wget bzip2 libtool-bin doxygen
 
