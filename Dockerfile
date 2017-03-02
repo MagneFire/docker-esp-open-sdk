@@ -16,9 +16,9 @@ RUN apt-get install -y make autoconf automake libtool gcc g++ gperf flex bison \
 		       git unzip bash wget bzip2 libtool-bin doxygen
 
 RUN useradd -ms /bin/bash -G dialout docker
-
-USER docker
 RUN mkdir /SDK/
+RUN chown docker:dialout /SDK/
+USER docker
 WORKDIR /SDK/
 
 RUN git clone https://github.com/pfalcon/esp-open-sdk.git --recursive
