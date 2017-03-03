@@ -10,7 +10,7 @@ RUN apk update
 RUN apk add --no-cache git make cmake gcc g++ python gawk texinfo \
                        doxygen libtool bzip2 wget unzip help2man \
                        sed python-dev ncurses-dev bison flex gperf \
-                       automake autoconf unrar expat-dev patch expat ca-certificates
+                       automake autoconf unrar expat-dev patch expat ca-certificates build-base
 
 # Update certificates, for the download part of the esp-open-sdk
 RUN update-ca-certificates
