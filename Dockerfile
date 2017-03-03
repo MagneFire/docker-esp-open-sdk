@@ -1,27 +1,33 @@
-FROM debian:jessie
+FROM alpine
 
 MAINTAINER Darrel Griët
 
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 
 USER root
 
-RUN echo 'deb http://httpredir.debian.org/debian jessie non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
-RUN echo 'deb http://httpredir.debian.org/debian jessie-updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
-RUN echo 'deb http://security.debian.org/ jessie/updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
+RUN apk update
+RUN apk add --no-cache git make cmake gcc g++ python gawk texinfo \
+                       doxygen libtool bzip2 wget unzip help2man \
+                       sed python-dev ncurses-dev bison flex gperf \
+                       automake autoconf unrar expat-dev patch expat ca-certificates
 
-RUN apt-get update
-RUN apt-get install -y make autoconf automake libtool gcc g++ gperf flex bison \ 
-		       texinfo gawk ncurses-dev libexpat-dev python python-dev python-serial sed \ 
-		       git help2man unzip bash wget bzip2 libtool-bin doxygen \
-		       screen bison gperf flex texinfo help2man gawk libncurses-dev python python-serial
-
-RUN useradd -ms /bin/bash -G dialout docker
-RUN mkdir /SDK/
-RUN chown docker:dialout /SDK/
+# Update certificates, for the download part of the esp-open-sdk
+RUN update-ca-certificates
+#RUN useradd -ms /bin/bash -G dialout docker
+# Add non root user.
+RUN adduser -D -u 1000 docker
+# Make root directory.
+RUN mkdir /opt/
+# Make 'docker' owner of /opt.
+RUN chown docker:dialout /opt/
+# Switch to 'docker' user
 USER docker
-WORKDIR /SDK/
-
+# Set working directory to /opt.
+WORKDIR /opt/
+# Clone the esp-open-sdk.
 RUN git clone https://github.com/pfalcon/esp-open-sdk.git --recursive
-WORKDIR /SDK/esp-open-sdk
-RUN make 
+# Change to the esp-open-sdk directory.
+WORKDIR /opt/esp-open-sdk
+# Build the esp-open-sdk
+RUN make
