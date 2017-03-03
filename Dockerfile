@@ -12,7 +12,7 @@ RUN echo 'deb http://security.debian.org/ jessie/updates non-free' >> /etc/apt/s
 
 RUN apt-get update
 RUN apt-get install -y make autoconf automake libtool gcc g++ gperf flex bison \ 
-		       texinfo gawk ncurses-dev libexpat-dev python python-serial sed \ 
+		       texinfo gawk ncurses-dev libexpat-dev python python-dev python-serial sed \ 
 		       git help2man unzip bash wget bzip2 libtool-bin doxygen \
 		       screen bison gperf flex texinfo help2man gawk libncurses-dev python python-serial
 
