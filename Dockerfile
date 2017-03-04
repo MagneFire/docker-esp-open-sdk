@@ -1,24 +1,27 @@
-FROM alpine
+FROM debian:jessie
 
 MAINTAINER Darrel Griët
 
-#ENV DEBIAN_FRONTEND noninteractive
-
+ENV DEBIAN_FRONTEND noninteractive
+# Switch to `root` user.
 USER root
 
-RUN apk update
-RUN apk add --no-cache git make cmake gcc g++ python gawk texinfo \
-                       doxygen libtool bzip2 wget unzip help2man \
-                       sed python-dev ncurses-dev bison flex gperf \
-                       automake autoconf unrar expat-dev patch expat ca-certificates build-base
+RUN echo 'deb http://httpredir.debian.org/debian jessie non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
+RUN echo 'deb http://httpredir.debian.org/debian jessie-updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
+RUN echo 'deb http://security.debian.org/ jessie/updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
+
+# Udate resources.
+RUN apt-get update
+# Install appropriate packages.
+RUN apt-get install -y git make cmake gcc g++ python python-serial gawk texinfo \
+                       doxygen libtool bzip2 wget unzip help2man libtool-bin \
+                       sed python-dev libncurses-dev ncurses-dev bison flex gperf sed \
+                       automake autoconf libexpat-dev expat ca-certificates
 
 # Update certificates, for the download part of the esp-open-sdk
 RUN update-ca-certificates
-#RUN useradd -ms /bin/bash -G dialout docker
 # Add non root user.
-RUN adduser -D -u 1000 docker
-# Make root directory.
-RUN mkdir /opt/
+RUN useradd -ms /bin/bash -G dialout docker
 # Make 'docker' owner of /opt.
 RUN chown docker:dialout /opt/
 # Switch to 'docker' user
@@ -26,8 +29,10 @@ USER docker
 # Set working directory to /opt.
 WORKDIR /opt/
 # Clone the esp-open-sdk.
-RUN git clone https://github.com/pfalcon/esp-open-sdk.git --recursive
+RUN git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 # Change to the esp-open-sdk directory.
 WORKDIR /opt/esp-open-sdk
-# Build the esp-open-sdk
+# Build the esp-open-sdk.
 RUN make
+# Add the Xtensa path to the $PATH variable.
+ENV PATH /opt/esp-open-sdk/xtensa-lx106-elf/bin:$PATH
