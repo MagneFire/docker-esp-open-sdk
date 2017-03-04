@@ -6,12 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # Switch to `root` user.
 USER root
 
-RUN echo 'deb http://httpredir.debian.org/debian jessie non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
-RUN echo 'deb http://httpredir.debian.org/debian jessie-updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
-RUN echo 'deb http://security.debian.org/ jessie/updates non-free' >> /etc/apt/sources.list.d/jessie.non-free.list
-
 # Udate resources.
-RUN apt-get update
+RUN apt-get -y update
 # Install appropriate packages.
 RUN apt-get install -y git make cmake gcc g++ python python-serial gawk texinfo \
                        doxygen libtool bzip2 wget unzip help2man libtool-bin \
